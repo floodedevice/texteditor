@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Text Editor</title>
+
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <style>
+        #editor {
+            text-shadow: 3px 4px 10px #00FF00;
+            font-weight: 1000;
+            outline: none;
+            border: none;
+            background: #6082B6;
+            color: #ffffff;
+            font-family: monospace;
+            resize: none;
+            width: 100vw;   /* Full width of the viewport */
+            height: 100vh;  /* Full height of the viewport */
+            position: absolute;
+            top: 0;         /* Position from the top */
+            left: 0;        /* Position from the left */
+            cursor: default !important;
+            font-weight: bold;
+        }
+
+::selection{
+background: rgb(255, 255, 255, 0.0);
+color: #78c778;
+            text-shadow: 0 0 20px #000;
+}
+
+        body {
+            background: #00416A;
+            margin: 0;      /* Remove default margin */
+            overflow: hidden; /* Prevent scrolling */
+        }
+        
+        h1 {
+            color: #00FF00;
+            font-size: 1.5em;
+            transition: 0.5s;
+            font-family: "Lucida Console";
+            text-shadow: 3px 4px 10px #00FF00;
+        }
+    </style>
+    
+    <script>
+        document.addEventListener('keydown', function(event) {
+            if (event.ctrlKey && event.shiftKey && event.altKey) {
+                if (event.key === 'S') {
+                    event.preventDefault();
+                    saveText();
+                } else if (event.key === 'O') {
+                    event.preventDefault();
+                    loadText();
+                }
+            }
+        });
+
+        function saveText() {
+            var textToSave = document.getElementById('editor').value;
+            var filename = prompt("Enter file name:");
+            var extension = prompt("Enter file extension:");
+            if (filename && extension) {
+                var fullFilename = filename + "." + extension;
+                var blob = new Blob([textToSave], {type: 'text/plain'});
+                var url = URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = fullFilename;
+                a.click();
+            }
+        }
+
+        function loadText() {
+            var input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.txt, .html';
+            input.onchange = function(event) {
+                var file = event.target.files[0];
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('editor').value = reader.result;
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+    </script>
+</head>
+<body>
+    <textarea id="editor" spellcheck="false" autofocus></textarea>
+</body>
+</html>
